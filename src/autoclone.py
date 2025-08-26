@@ -108,8 +108,6 @@ class AutoClone(object):
         e.g. : 3600 -> get submission of (current-3600 sec ~ current)
     cur_unix_time : int
         current unix time
-    ac_only : bool
-        flag whether to save non-ac code. this feature is currently disabled
     submissions : list of dict
         request result from AtCoder Problems Submission API
     """
@@ -118,7 +116,6 @@ class AutoClone(object):
         self.user_id = self.load_yml()["user_id"]
         self.time_range = time_range
         self.cur_unix_time = int(datetime.timestamp(datetime.now()))
-        self.ac_only = True  # future todo
 
         if self.user_id is None:
             raise Exception(
@@ -146,13 +143,11 @@ class AutoClone(object):
         & save write codes as new file
         """
         for record in self.submissions:
-            contest_id = record["contest_id"]
-            language = record["language"]
-            problem_id = record["problem_id"]
-            submission_id = record["id"]
-            result = record["result"]
-
-            if self.ac_only and result == "AC":
+            if record["result"] == "AC":
+                contest_id = record["contest_id"]
+                language = record["language"]
+                problem_id = record["problem_id"]
+                submission_id = record["id"]
                 code = self.get_code(contest_id, submission_id)
                 self.write_code(code, contest_id, problem_id, language)
             else:
@@ -208,8 +203,8 @@ class AutoClone(object):
             target programming language (not extension)
         """
 
-        code = AutoClone.add_url_comment(language, contest_id, problem_id, code)
         extension = AutoClone.get_extension(language)
+        code = AutoClone.add_url_comment(extension, contest_id, problem_id, code)
         path = f"{contest_id}/{problem_id}.{extension}"
         os.makedirs(os.path.dirname(path), exist_ok=True)
         with open(path, "w") as f:
@@ -225,9 +220,7 @@ class AutoClone(object):
         config : dict
             dict of config file.
         """
-        with open(CONFIG_PATH, "r") as f:
-            config = yaml.safe_load(f)
-        return config
+        return {"user_id" : "matsunoVo"}
 
     @staticmethod
     def get_extension(language: str) -> str:
@@ -256,14 +249,14 @@ class AutoClone(object):
         return extension
 
     @staticmethod
-    def add_url_comment(language: str, contest_id: str, problem_id: str, code: str) -> str:
+    def add_url_comment(extension: str, contest_id: str, problem_id: str, code: str) -> str:
         """
         Add comment of problem URL to code
 
         Parameters
         ----------
-        language : str
-            target programming language (not extension)
+        extension : str
+            file extension of the target language
         contest_id : str
             target contest_id. used as folder name
         problem_id : str
@@ -276,8 +269,8 @@ class AutoClone(object):
         code : str
             code with problem url
         """
-        if language == "Python":
-            return f'"""\r\nhttps://atcoder.jp/contests/{contest_id}/tasks/{problem_id}\r\n"""\r\n\r\n' + code
+        if extension == "py":
+            return f'\nhttps://atcoder.jp/contests/{contest_id}/tasks/{problem_id}\n"""\n\n' + code
         else:
             return code
 
