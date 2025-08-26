@@ -1,4 +1,4 @@
-
+"""
 https://atcoder.jp/contests/arc004/tasks/arc004_1
 """
 

@@ -1,4 +1,4 @@
-
+"""
 https://atcoder.jp/contests/abc420/tasks/abc420_a
 """
 

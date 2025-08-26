@@ -1,4 +1,4 @@
-
+"""
 https://atcoder.jp/contests/abc419/tasks/abc419_b
 """
 
