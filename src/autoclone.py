@@ -20,7 +20,6 @@ EXTENSIONS = {
     "Python": "py",
     "PyPy": "py",
     "Pascal": "pas",
-    "Perl": "pl",
     "Ruby": "rb",
     "Scala": "scala",
     "Text": "txt",
@@ -40,7 +39,59 @@ EXTENSIONS = {
     "Perl6": "p6",
     "Kotlin": "kt",
     "COBOL": "cob",
-    "C": ".c",
+
+    "bc": "bc",
+    "dc": "dc",
+    "Cython": "pyx",
+    "Clojure": "clj",
+    "Dart": "dart",
+    "Erlang": "erl",
+    "Elixir": "ex",
+    "F#": "fs",
+    "Forth": "fs",
+    "Fortran": "f",
+    "Go": "go",
+    "Haxe": "hx",
+    "Lua": "lua",
+    "Dash": "sh",
+    "Common Lisp": "cl",
+    "Raku": "p6",
+    "Prolog": "pl",
+    "Racket": "rkt",
+    "Scheme": "scm",
+    "Zsh": "sh",
+    "Ada": "adb",
+    "Unlambda": "unl",
+    "Vim": "vim",
+
+    # 2023 language update
+    "Zig": "zig",
+    "SageMath": "sage",
+    "なでしこ": "nako",
+    "Assembly": "asm",
+    "PowerShell": "ps1",
+    "Koka": "kk",
+    "Emacs Lisp": "elc",
+    "プロデル": "rdr",
+    "ECLiPSe": "ecl",
+    "Nibbles": "nbl",
+    "jq": "jq",
+    "Cyber": "cy",
+    "Carp": "carp",
+    "LLBM": "ll",
+    "Factor": "factor",
+    "Whitespace": "ws",
+    "><>": "fish",
+    "ReasonML": "re",
+    "Mercury": "m",
+    "Seed7": "sd7",
+    "Unison": "u",
+
+    # One-character language
+    "C": "c",
+    "D": "d",
+    "V": "v",
+    "R": "r",
 }
 
 
@@ -70,7 +121,8 @@ class AutoClone(object):
         self.ac_only = True  # future todo
 
         if self.user_id is None:
-            raise Exception("user_id not found. you must configure config/config.yml")
+            raise Exception(
+                "user_id not found. you must configure config/config.yml")
 
     def get_submissions(self) -> None:
         """
@@ -155,6 +207,8 @@ class AutoClone(object):
         language : str
             target programming language (not extension)
         """
+
+        code = AutoClone.add_url_comment(language, contest_id, problem_id, code)
         extension = AutoClone.get_extension(language)
         path = f"{contest_id}/{problem_id}.{extension}"
         os.makedirs(os.path.dirname(path), exist_ok=True)
@@ -201,6 +255,31 @@ class AutoClone(object):
             )
         return extension
 
+    @staticmethod
+    def add_url_comment(language: str, contest_id: str, problem_id: str, code: str) -> str:
+        """
+        Add comment of problem URL to code
+
+        Parameters
+        ----------
+        language : str
+            target programming language (not extension)
+        contest_id : str
+            target contest_id. used as folder name
+        problem_id : str
+            target problem_id. used as file name
+        code : str
+            str of raw code without extension
+
+        Returns
+        -------
+        code : str
+            code with problem url
+        """
+        if language == "Python":
+            return f'"""\r\nhttps://atcoder.jp/contests/{contest_id}/tasks/{problem_id}\r\n"""\r\n\r\n' + code
+        else:
+            return code
 
 if __name__ == "__main__":
     pass
