@@ -270,7 +270,7 @@ class AutoClone(object):
             code with problem url
         """
         if extension == "py":
-            return f'\nhttps://atcoder.jp/contests/{contest_id}/tasks/{problem_id}\n"""\n\n' + code
+            return f'"""\nhttps://atcoder.jp/contests/{contest_id}/tasks/{problem_id}\n"""\n\n' + code
         else:
             return code
 
