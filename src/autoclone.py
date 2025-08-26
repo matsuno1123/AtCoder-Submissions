@@ -1,5 +1,6 @@
 import os
-import yaml
+import time
+
 from datetime import datetime
 
 from bs4 import BeautifulSoup
@@ -150,6 +151,7 @@ class AutoClone(object):
                 submission_id = record["id"]
                 code = self.get_code(contest_id, submission_id)
                 self.write_code(code, contest_id, problem_id, language)
+                time.sleep(5)
             else:
                 # Accept non-AC reuslt
                 # Currently Unavailable
